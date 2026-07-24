@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piola Da Celso - Trattoria di tradizione</title>
+  
+  <!-- Font Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN con configurazione personalizzata dei colori -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Cinzel', 'serif'],
+            serif: ['Lora', 'serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            barolo: {
+              500: '#8e2331',
+              600: '#6b1f2a',
+              700: '#52161f',
+              900: '#2c0a0f',
+            },
+            espresso: {
+              800: '#3a2e22',
+              900: '#2b2118',
+            },
+            gold: {
+              300: '#e5ca70',
+              500: '#b8893b',
+            },
+            parchment: {
+              50: '#fbf8f1',
+              100: '#f7f1e4',
+            }
+          },
+          letterSpacing: {
+            widest2: '0.2em',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stili personalizzati -->
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background-color: #FBF8F1;
+      color: #2B2118;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Subtle paper-grain texture */
+    .bg-paper-grain {
+      background-color: #F7F1E4;
+      background-image:
+        radial-gradient(circle at 25% 30%, rgba(154, 115, 48, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 75% 70%, rgba(107, 31, 42, 0.04) 0%, transparent 45%),
+        repeating-linear-gradient(45deg, rgba(58, 46, 34, 0.012) 0 2px, transparent 2px 4px);
+    }
+
+    /* Vintage decorative divider */
+    .fleuron-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      color: #B8893B;
+    }
+    .fleuron-divider::before,
+    .fleuron-divider::after {
+      content: '';
+      height: 1px;
+      flex: 1;
+      max-width: 6rem;
+      background: linear-gradient(to right, transparent, #C9A227, transparent);
+    }
+
+    /* Smooth toggle arrow rotation */
+    .toggle-arrow {
+      transition: transform 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .toggle-arrow[data-open='true'] {
+      transform: rotate(180deg);
+    }
+
+    /* Accordion animation */
+    .toggle-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .toggle-panel[data-open='true'] {
+      grid-template-rows: 1fr;
+    }
+    .toggle-panel > .toggle-inner {
+      overflow: hidden;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .toggle-arrow,
+      .toggle-panel {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-paper-grain text-espresso-900">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-barolo-700/15 bg-parchment-50/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+      <a href="#benvenuto" class="flex items-center gap-3">
+        <i data-lucide="utensils-crossed" class="text-barolo-600" style="width: 26px; height: 26px;"></i>
+        <span class="font-display text-lg sm:text-xl font-semibold tracking-wide text-barolo-700">
+          Piola Da Celso
+        </span>
+      </a>
+      <nav class="hidden items-center gap-7 font-body text-sm text-espresso-800/80 md:flex">
+        <a href="#orari" class="transition-colors hover:text-barolo-600">Orari</a>
+        <a href="#caratteristiche" class="transition-colors hover:text-barolo-600">Caratteristiche</a>
+        <a href="#menu" class="transition-colors hover:text-barolo-600">Menù</a>
+        <a href="#contatti" class="transition-colors hover:text-barolo-600">Contatti</a>
+      </nav>
+      <a
+        href="tel:0114331202"
+        className=""
+        class="hidden items-center gap-2 rounded-full border border-barolo-600/30 px-4 py-2 font-body text-sm text-barolo-700 transition-colors hover:bg-barolo-600 hover:text-parchment-50 sm:inline-flex"
+      >
+        <i data-lucide="phone" style="width: 15px; height: 15px;"></i>
+        Prenota
+      </a>
+    </div>
+  </header>
+
+  <!-- Welcome / Hero -->
+  <section id="benvenuto" class="relative overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="https://images.pexels.com/photos/34218157/pexels-photo-34218157/free-photo-of-charming-italian-osteria-with-vintage-ambiance.jpeg?auto=compress&cs=tinysrgb&w=1600"
+        alt="Interno rustico di una trattoria piemontese con tavoli di legno e luce calda"
+        class="h-full w-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-espresso-900/75 via-espresso-900/55 to-espresso-900/85"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-4xl px-6 py-24 sm:py-32 text-center text-parchment-50">
+      <p class="mb-5 font-body text-xs uppercase tracking-widest2 text-gold-300">
+        Torino · Dal cuore del Piemonte
+      </p>
+      <h1 class="font-display text-5xl font-bold leading-tight sm:text-7xl">
+        Piola Da Celso
+      </h1>
+      <p class="mt-3 font-serif text-xl italic text-gold-300 sm:text-2xl">
+        Trattoria di tradizione
+      </p>
+
+      <div class="fleuron-divider my-8 max-w-md mx-auto">
+        <span class="text-2xl">❦</span>
+      </div>
+
+      <p class="mx-auto max-w-2xl font-body text-[15px] leading-relaxed text-parchment-100/90 sm:text-base">
+        A Torino, la Piola Da Celso è un autentico tempio della tradizione
+        piemontese, dove il tempo sembra essersi fermato per fare spazio alla
+        più genuina ospitalità di una volta. In un ambiente caldo, informale e
+        tipicamente sabaudo, la conduzione familiare accoglie gli ospiti con
+        il sorriso, facendo sentire chiunque subito a casa. Il menù è un inno
+        ai sapori del territorio: dal leggendario vitello tonnato ai tajarin
+        fatti in casa, passando per il brasato al Barolo, gli agnolotti e i
+        tipici dolci artigianali come il bunet. Con piatti ricchi di gusto,
+        porzioni generose e un imbattibile rapporto qualità-prezzo, è il luogo
+        ideale per chi cerca una vera esperienza gastronomica piemontese,
+        schietta, abbondante e senza fronzoli.
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <a
+          href="#menu"
+          class="rounded-full bg-barolo-600 px-7 py-3 font-body text-sm font-medium text-parchment-50 shadow-lg shadow-barolo-900/30 transition-all hover:bg-barolo-500 hover:shadow-xl"
+        >
+          Scopri il menù
+        </a>
+        <a
+          href="#contatti"
+          class="rounded-full border border-parchment-100/40 px-7 py-3 font-body text-sm font-medium text-parchment-50 transition-all hover:border-gold-300 hover:text-gold-300"
+        >
+          Come raggiungerci
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hours -->
+  <section id="orari" class="border-b border-barolo-700/10 bg-parchment-100/60 py-16 sm:py-20">
+    <div class="mx-auto max-w-5xl px-6 sm:px-8">
+      <div class="text-center">
+        <p class="font-body text-xs uppercase tracking-widest2 text-gold-500">Orari di apertura</p>
+        <h2 class="mt-2 font-display text-3xl font-bold text-barolo-700 sm:text-4xl">Quando venirci a trovare</h2>
+        <div class="fleuron-divider mt-4 max-w-xs mx-auto"><span class="text-xl">❦</span></div>
+      </div>
+
+      <div class="mt-10 grid gap-8 md:grid-cols-[1.4fr_1fr]">
+        <div class="rounded-2xl border border-barolo-700/15 bg-parchment-50/80 p-6 shadow-sm sm:p-8">
+          <ul class="divide-y divide-barolo-700/10">
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Lunedì</span>
+              <span class="text-sm uppercase tracking-wide text-barolo-600/70">Chiuso</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Martedì</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 22:30</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Mercoledì</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 22:30</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Giovedì</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 22:30</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Venerdì</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 23:00</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Sabato</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 23:00</span>
+            </li>
+            <li class="flex items-center justify-between py-3 font-body">
+              <span class="font-display text-base font-medium text-espresso-800">Domenica</span>
+              <span class="text-sm text-espresso-800/80">12:00 – 15:00  ·  19:00 – 22:30</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col justify-center rounded-2xl border border-gold-500/30 bg-barolo-600 p-6 text-parchment-50 shadow-md sm:p-8">
+          <i data-lucide="clock" class="mb-4 text-gold-300" style="width: 28px; height: 28px;"></i>
+          <p class="font-display text-xl font-medium leading-snug">
+            La prenotazione è consigliata
+          </p>
+          <p class="mt-3 font-body text-sm leading-relaxed text-parchment-100/90">
+            In alcuni momenti della settimana la prenotazione diventa
+            obbligatoria, a pranzo come a cena. Vi riserviamo sempre la migliore
+            accoglienza.
+          </p>
+          <a
+            href="tel:0114331202"
+            class="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-parchment-50 px-5 py-2.5 font-body text-sm font-medium text-barolo-700 transition-colors hover:bg-gold-300"
+          >
+            <i data-lucide="phone" style="width: 15px; height: 15px;"></i>
+            011 433 1202
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="caratteristiche" class="py-16 sm:py-20">
+    <div class="mx-auto max-w-3xl px-6 sm:px-8">
+      <div class="text-center">
+        <p class="font-body text-xs uppercase tracking-widest2 text-gold-500">Caratteristiche</p>
+        <h2 class="mt-2 font-display text-3xl font-bold text-barolo-700 sm:text-4xl">Cosa ci rende speciali</h2>
+        <div class="fleuron-divider mt-4 max-w-xs mx-auto"><span class="text-xl">❦</span></div>
+      </div>
+
+      <div class="mt-10 rounded-2xl border border-barolo-700/15 bg-parchment-50/70 px-6 py-2 shadow-sm sm:px-8">
+        
+        <!-- Toggle 1 (Open by default) -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="true">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="accessibility" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Accessibilità e Accoglienza</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="true" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="true">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                L'inclusività e l'attenzione per l'ospite sono i pilastri della nostra filosofia: la struttura è completamente priva di barriere architettoniche, offrendo ingresso, bagno e tavoli totalmente accessibili in sedia a rotelle. Garantiamo uno spazio aperto, sicuro e confortevole, ideale per accogliere al meglio anche persone con bisogni speciali o ridotta mobilità.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle 2 -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="sparkles" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Servizi e Momenti Ideali</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                Il locale offre la cornice ideale per ogni occasione, da un pranzo informale a una cena di qualità, accogliendo con assoluta naturalezza anche chi desidera concedersi il piacere di un pasto da solo. L'esperienza è impreziosita da un attento servizio al tavolo e dalla possibilità di accomodarsi ai tavoli all'aperto per godersi il pasto all'aria aperta.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle 3 -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="calendar-check" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Pianificazione e Pagamenti</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                Per garantire un servizio impeccabile e riservarvi la migliore accoglienza, la prenotazione è fortemente consigliata (e in determinati momenti obbligatoria) sia a pranzo che a cena. Per il saldo finale mettiamo a disposizione un'esperienza smart e moderna, accettando carte di credito, di debito e pagamenti mobile NFC.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle 4 -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="heart-handshake" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Un'Accoglienza per Tutti</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                La nostra struttura si distingue per un'ospitalità calorosa e attenta a ogni esigenza, con una gestione orgogliosamente al femminile. È l'ambiente perfetto per le famiglie e per chi viaggia con i più piccoli, per i quali garantiamo la massima comodità mettendo a disposizione pratici seggioloni e un contesto sereno.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle 5 -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="wine" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Atmosfera ed Eccellenze</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                Immerso in una cornice dal fascino storico, il locale coniuga un'anima casual con un'atmosfera tranquilla e rilassante. I nostri punti di forza includono un servizio di caffetteria d'eccellenza, una selezione di dessert artigianali ideali per concludere la giornata e un'ottima carta dei vini pensata per valorizzare ogni abbinamento.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toggle 6 -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Proposte Culinarie e Bar</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                La nostra offerta gastronomica propone un ricco menù che valorizza piatti curati, opzioni vegetariane e cibo sano, con il servizio attivo fino a tarda sera per chi ama mangiare senza fretta. Il bar interno completa la proposta con un'ampia scelta beverage che spazia da birre selezionate e superalcolici fino ai migliori vini.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section id="menu" class="border-y border-barolo-700/10 bg-parchment-100/60 py-16 sm:py-20">
+    <div class="mx-auto max-w-3xl px-6 sm:px-8">
+      <div class="text-center">
+        <p class="font-body text-xs uppercase tracking-widest2 text-gold-500">Il menù</p>
+        <h2 class="mt-2 font-display text-3xl font-bold text-barolo-700 sm:text-4xl">I sapori della tradizione</h2>
+        <div class="fleuron-divider mt-4 max-w-xs mx-auto"><span class="text-xl">❦</span></div>
+      </div>
+      <p class="mx-auto mt-4 max-w-xl text-center font-body text-sm text-espresso-800/70">
+        Una selezione dei piatti che potrete gustare. Il menù segue le
+        stagioni e la disponibilità del giorno — chiedete sempre a Celso.
+      </p>
+
+      <div class="mt-10 rounded-2xl border border-barolo-700/15 bg-parchment-50/70 px-6 py-2 shadow-sm sm:px-8">
+        
+        <!-- Antipasti (Aperto di default) -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="true">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Antipasti</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="true" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="true">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                <p class="mb-4 font-serif text-sm italic text-barolo-600/80">Da condividere, come vuole la tradizione piemontese</p>
+                <ul class="space-y-4">
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Antipasto misto della casa</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Selezione di salumi, formaggi e assaggi tipici</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 7</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Vitello tonnato</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Girello di vitello, salsa tonnata, capperi e limone</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 9</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Carne cruda battuta al coltello</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Fassona piemontese, olio EVO, limone e grissini</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 8</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Acciughe al verde</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Acciughe in salsa verde di prezzemolo e aglio</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 6</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Insalata russa</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Giardiniera e maionese fatta in casa</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 6</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Peperoni alla piemontese</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Peperoni marinati con aglio e prezzemolo</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 5</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primi piatti -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Primi piatti</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                <p class="mb-4 font-serif text-sm italic text-barolo-600/80">Pasta fresca tirata a mano ogni mattina</p>
+                <ul class="space-y-4">
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Tajarin al sugo di arrosto</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Tagliatelle sottili al tuorlo con sugo d'arrosto</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 7</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Tajarin al tartufo</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">In stagione, tartufo bianco d'Alba a lamelle</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 18</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Agnolotti del plin</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Ripieni di tre carni arrosto, burro e salvia</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 8</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Agnolotti al sugo d'arrosto</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Il classico "al toc": tre arrosti e sugo ristretto</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 9</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Risotto al Barolo</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Carnaroli mantecato al vino rosso Barolo</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 8</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Risotto ai funghi porcini</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">In stagione, porcini freschi e Parmigiano</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 9</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondi piatti -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Secondi piatti</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                <p class="mb-4 font-serif text-sm italic text-barolo-600/80">Piatti ricchi di gusto, porzioni generose</p>
+                <ul class="space-y-4">
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Brasato al Barolo</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Punta di spalla brasata nel vino Barolo, polenta</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 14</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Arrosto di lonza di maiale</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Lonza al forno con patate e sugo d'arrosto</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 12</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Bagna càuda</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Salsa calda di aglio e acciughe con verdure in stagione</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 13</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Fritto misto alla piemontese</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Carne, verdure, amaretti e semolini fritti</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 15</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Coniglio alla cacciatora</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Coniglio brasato con olive, rosmarino e timo</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 12</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Formaggi misti</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Selezione di formaggi piemontesi e confetture</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 9</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dolci -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Dolci</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                <p class="mb-4 font-serif text-sm italic text-barolo-600/80">Dolci artigianali per concludere in dolcezza</p>
+                <ul class="space-y-4">
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Bunet</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Budino al cacao, amaretti e rhum, caramello</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 5</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Panna cotta</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Panna cotta alla vaniglia con coulis di frutti di bosco</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 5</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Torta di nocciole</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Torta morbida alle nocciole del Piemonte IGP</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 5</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Zabaione con peveri</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Zabaione caldo e biscotti secchi del luogo</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 6</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Gelati e sorbetti</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Gusti della casa, fatti in giornata</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 4</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bevande e Vini -->
+        <div class="toggle-item border-b border-barolo-700/20 last:border-b-0">
+          <button type="button" class="toggle-btn group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-barolo-600" aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="text-gold-500"><i data-lucide="utensils" style="width: 20px; height: 20px;"></i></span>
+              <span class="font-display text-lg sm:text-xl font-medium tracking-wide">Bevande e Vini</span>
+            </span>
+            <i data-lucide="chevron-down" class="toggle-arrow shrink-0 text-gold-500" data-open="false" style="width: 22px; height: 22px;"></i>
+          </button>
+          <div class="toggle-panel" data-open="false">
+            <div class="toggle-inner">
+              <div class="pb-6 pr-8 font-body text-espresso-800/90 leading-relaxed text-[15px] sm:text-base">
+                <p class="mb-4 font-serif text-sm italic text-barolo-600/80">Carta dei vini pensata per ogni abbinamento</p>
+                <ul class="space-y-4">
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Barolo DOCG</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Nebbiolo in purezza, annata in carta</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 32 / bott.</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Barbaresco DOCG</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Elegante, profumato, da uve Nebbiolo</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 28 / bott.</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Dolcetto d'Alba</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Rosso giovane, fruttato, da bere giovane</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 16 / bott.</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Arneis</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Bianco piemontese fresco e floreale</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 18 / bott.</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Birre artigianali</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Selezione di birre del territorio</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">€ 4 / calice</span>
+                  </li>
+                  <li class="flex items-baseline justify-between gap-4 border-b border-dashed border-barolo-700/15 pb-3 last:border-b-0 last:pb-0">
+                    <div class="min-w-0">
+                      <p class="font-display text-base font-medium text-espresso-900">Caffetteria</p>
+                      <p class="mt-0.5 font-body text-sm text-espresso-800/70">Espresso, caffè d'eccellenza e digestivi</p>
+                    </div>
+                    <span class="shrink-0 font-serif text-base font-semibold text-barolo-700">da € 2</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="mt-6 text-center font-body text-xs text-espresso-800/50">
+        Prezzi indicativi. Il menù varia secondo stagione e disponibilità.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contacts -->
+  <section id="contatti" class="py-16 sm:py-20">
+    <div class="mx-auto max-w-5xl px-6 sm:px-8">
+      <div class="text-center">
+        <p class="font-body text-xs uppercase tracking-widest2 text-gold-500">Contatti</p>
+        <h2 class="mt-2 font-display text-3xl font-bold text-barolo-700 sm:text-4xl">Venirci a trovare</h2>
+        <div class="fleuron-divider mt-4 max-w-xs mx-auto"><span class="text-xl">❦</span></div>
+      </div>
+
+      <div class="mt-10 grid gap-6 sm:grid-cols-3">
+        <!-- Phone -->
+        <a
+          href="tel:0114331202"
+          class="group flex flex-col items-start gap-3 rounded-2xl border border-barolo-700/15 bg-parchment-50/80 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-barolo-600/40 hover:shadow-md"
+        >
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-barolo-600/10 text-barolo-600 transition-colors group-hover:bg-barolo-600 group-hover:text-parchment-50">
+            <i data-lucide="phone" style="width: 20px; height: 20px;"></i>
+          </span>
+          <span class="font-body text-xs uppercase tracking-wide text-espresso-800/60">
+            Telefono
+          </span>
+          <span class="font-display text-lg font-medium text-espresso-900">
+            011 433 1202
+          </span>
+        </a>
+
+        <!-- Address -->
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Piola+Da+Celso+Via+Verzuolo+40+Torino"
+          target="_blank"
+          rel="noreferrer"
+          class="group flex flex-col items-start gap-3 rounded-2xl border border-barolo-700/15 bg-parchment-50/80 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-barolo-600/40 hover:shadow-md"
+        >
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-barolo-600/10 text-barolo-600 transition-colors group-hover:bg-barolo-600 group-hover:text-parchment-50">
+            <i data-lucide="map-pin" style="width: 20px; height: 20px;"></i>
+          </span>
+          <span class="font-body text-xs uppercase tracking-wide text-espresso-800/60">
+            Indirizzo
+          </span>
+          <span class="font-display text-lg font-medium leading-snug text-espresso-900">
+            Via Verzuolo, 40
+            <br />
+            10139 Torino (TO)
+          </span>
+        </a>
+
+        <!-- Facebook -->
+        <a
+          href="https://www.facebook.com/Piola-Da-Celso-166529490046403/"
+          target="_blank"
+          rel="noreferrer"
+          class="group flex flex-col items-start gap-3 rounded-2xl border border-barolo-700/15 bg-parchment-50/80 p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-barolo-600/40 hover:shadow-md"
+        >
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-barolo-600/10 text-barolo-600 transition-colors group-hover:bg-barolo-600 group-hover:text-parchment-50">
+            <i data-lucide="facebook" style="width: 20px; height: 20px;"></i>
+          </span>
+          <span class="font-body text-xs uppercase tracking-wide text-espresso-800/60">
+            Facebook
+          </span>
+          <span class="font-display text-lg font-medium leading-snug text-espresso-900">
+            Piola Da Celso
+            <br />
+            <span class="font-body text-sm font-normal text-espresso-800/70">
+              Pagina ufficiale
+            </span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Map embed -->
+      <div class="mt-8 overflow-hidden rounded-2xl border border-barolo-700/15 shadow-md">
+        <iframe
+          title="Mappa — Piola Da Celso, Via Verzuolo 40, Torino"
+          src="https://www.google.com/maps?q=Via+Verzuolo+40,+10139+Torino&output=embed"
+          width="100%"
+          height="320"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          class="block w-full"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-espresso-900 py-10 text-parchment-100/70">
+    <div class="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 text-center sm:px-8">
+      <div class="flex items-center gap-2 text-gold-300">
+        <i data-lucide="utensils-crossed" style="width: 18px; height: 18px;"></i>
+        <span class="font-display text-base font-semibold text-parchment-50">
+          Piola Da Celso
+        </span>
+      </div>
+      <p class="font-body text-xs leading-relaxed">
+        Via Verzuolo, 40 · 10139 Torino (TO) · 011 433 1202
+      </p>
+      <p class="font-serif text-sm italic text-gold-300/80">
+        Trattoria di tradizione piemontese
+      </p>
+    </div>
+  </footer>
+
+  <!-- Script per Icone e Toggle dinamico -->
+  <script>
+    // Inizializza le icone Lucide
+    lucide.createIcons();
+
+    // Gestione Accordion / Toggle
+    document.querySelectorAll('.toggle-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.toggle-item');
+        const arrow = item.querySelector('.toggle-arrow');
+        const panel = item.querySelector('.toggle-panel');
+        
+        const isOpen = button.getAttribute('aria-expanded') === 'true';
+
+        // Inverti lo stato
+        button.setAttribute('aria-expanded', !isOpen);
+        if (arrow) arrow.setAttribute('data-open', !isOpen);
+        if (panel) panel.setAttribute('data-open', !isOpen);
+      });
+    });
+  </script>
+</body>
+</html>
